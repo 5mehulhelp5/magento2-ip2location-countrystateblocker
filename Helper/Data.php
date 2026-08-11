@@ -1,9 +1,4 @@
 <?php
-/**
- * @category   Hexasoft
- *
- * @copyright  Copyright (c) IP2Location.com. ( https://www.ip2location.com ).
- */
 
 namespace Hexasoft\IP2LocationCountryBlocker\Helper;
 
@@ -14,12 +9,17 @@ use Magento\Store\Model\ScopeInterface;
 
 class Data extends AbstractHelper
 {
-	public const XML_PATH_ENABLED = 'ip2locationcountryblocker/settings/enable';
-	public const XML_PATH_ENABLED_REDIRECTION = 'ip2locationcountryblocker/redirection/enable_redirection';
-	public const XML_PATH_COUNTRIES = 'ip2locationcountryblocker/settings/countries';
-	public const XML_PATH_IP_BLACKLIST = 'ip2locationcountryblocker/settings/ip_blacklist';
-	public const XML_PATH_DATABASE = 'ip2locationcountryblocker/settings/database';
-	public const XML_PATH_API_KEY = 'ip2locationcountryblocker/settings/api_key';
+	public const XML_PATH_ENABLED = 'country_blocker/settings/enable';
+	public const XML_PATH_ENABLED_REDIRECTION = 'country_blocker/redirection/enable_redirection';
+	public const XML_PATH_COUNTRIES = 'country_blocker/settings/countries';
+	public const XML_PATH_IP_BLACKLIST = 'country_blocker/settings/ip_blacklist';
+	public const XML_PATH_DATABASE = 'country_blocker/settings/database';
+	public const XML_PATH_API_KEY = 'country_blocker/settings/api_key';
+	public const XML_PATH_IP_WHITELIST = 'country_blocker/settings/ip_whitelist';
+	public const XML_PATH_ENABLE_SESSION_CACHE = 'country_blocker/settings/enable_session_cache';
+	public const XML_PATH_BLOCK_PAGE_TYPE = 'country_blocker/block_page/block_page_type';
+	public const XML_PATH_CMS_BLOCK_IDENTIFIER = 'country_blocker/block_page/cms_block_identifier';
+	public const XML_PATH_REDIRECT_URL = 'country_blocker/block_page/redirect_url';
 	public const IP_LIST_REGEXP_DELIMITER = '/[\r?\n]+/';
 
 	private $remoteAddress;
@@ -105,7 +105,7 @@ class Data extends AbstractHelper
 	 */
 	public function getDatabase($storeId = null)
 	{
-		return $this->scopeConfig->getValue(self::XML_PATH_DATABASE, ScopeInterface::SCOPE_STORE, $storeId);
+		return (string) $this->scopeConfig->getValue(self::XML_PATH_DATABASE, ScopeInterface::SCOPE_STORE, $storeId);
 	}
 
 	/**
@@ -120,6 +120,32 @@ class Data extends AbstractHelper
 		return $this->scopeConfig->getValue(self::XML_PATH_API_KEY, ScopeInterface::SCOPE_STORE, $storeId);
 	}
 
+	public function getIpWhitelist($storeId = null): array
+	{
+		$raw = $this->scopeConfig->getValue(self::XML_PATH_IP_WHITELIST, ScopeInterface::SCOPE_STORE, $storeId);
+		return array_filter((array) preg_split(self::IP_LIST_REGEXP_DELIMITER, (string) $raw));
+	}
+
+	public function isSessionCacheEnabled($storeId = null): bool
+	{
+		return $this->scopeConfig->isSetFlag(self::XML_PATH_ENABLE_SESSION_CACHE, ScopeInterface::SCOPE_STORE, $storeId);
+	}
+
+	public function getBlockPageType($storeId = null): string
+	{
+		return (string) $this->scopeConfig->getValue(self::XML_PATH_BLOCK_PAGE_TYPE, ScopeInterface::SCOPE_STORE, $storeId) ?: 'default';
+	}
+
+	public function getCmsBlockIdentifier($storeId = null): string
+	{
+		return (string) $this->scopeConfig->getValue(self::XML_PATH_CMS_BLOCK_IDENTIFIER, ScopeInterface::SCOPE_STORE, $storeId);
+	}
+
+	public function getRedirectUrl($storeId = null): string
+	{
+		return (string) $this->scopeConfig->getValue(self::XML_PATH_REDIRECT_URL, ScopeInterface::SCOPE_STORE, $storeId);
+	}
+
 	public function getClientIp()
 	{
 		// If website is hosted behind CloudFlare protection.
@@ -127,8 +153,8 @@ class Data extends AbstractHelper
 			return $_SERVER['HTTP_CF_CONNECTING_IP'];
 		}
 
-		if (isset($_SERVER['X-Real-IP']) && filter_var($_SERVER['X-Real-IP'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-			return $_SERVER['X-Real-IP'];
+		if (isset($_SERVER['HTTP_X_REAL_IP']) && filter_var($_SERVER['HTTP_X_REAL_IP'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+			return $_SERVER['HTTP_X_REAL_IP'];
 		}
 
 		if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {

@@ -1,18 +1,28 @@
 {
 	"name": "hexasoft/ip2location-countryblocker",
 	"description": "Block visitors by country.",
-	"keywords": ["magento2", "ip2location", "redirection", "blocker"],
+	"keywords": [
+		"magento2",
+		"ip2location",
+		"redirect",
+		"block"
+	],
 	"type": "magento2-module",
-	"version": "1.1.0",
-	"license":["MIT"],
+	"version": "1.3.0",
+	"license": [
+		"MIT"
+	],
 	"require": {
+	  "php": ">=7.4",
 		"ip2location/ip2location-php": "~8"
 	},
-	"authors": [{
+	"authors": [
+		{
 			"name": "IP2Location",
-			"homepage": "http://www.ip2location.com/"
-	}],
-	 "autoload": {
+			"homepage": "https://www.ip2location.com/"
+		}
+	],
+	"autoload": {
 		"files": [
 			"registration.php"
 		],

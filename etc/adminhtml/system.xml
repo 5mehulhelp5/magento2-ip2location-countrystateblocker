@@ -4,11 +4,11 @@
 		<tab id="hexasoft" translate="label" sortOrder="155">
 			<label>IP2Location</label>
 		</tab>
-		<section id="ip2locationcountryblocker" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+		<section id="country_blocker" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
 			<class>separator-top</class>
 			<label>Country Blocker</label>
 			<tab>hexasoft</tab>
-			<resource>Hexasoft_IP2LocationCountryBlocker::config_ip2locationcountryblocker</resource>
+			<resource>Hexasoft_IP2LocationCountryBlocker::config_country_blocker</resource>
 			<group id="settings" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
 				<label>Settings</label>
 				<field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
@@ -24,6 +24,10 @@
 					<label>IP Blacklist</label>
 					<comment>Enter IP address to block. One IP address per line. Support wildcard and CIDR. Example: 1.2.3.4, 1.2.3.*, 1.</comment>
 				</field>
+				<field id="ip_whitelist" translate="label comment" type="textarea" sortOrder="42" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>IP Whitelist</label>
+					<comment>IP addresses that bypass all blocking. One per line. Supports wildcard and CIDR. Example: 1.2.3.4, 1.2.3.*, 1.2.3.0/24</comment>
+				</field>
 				<field id="database" translate="label comment" type="text" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>BIN Database</label>
 					<comment><![CDATA[<p>The absolute path to IP2Location BIN database. Download free <a href="https://lite.ip2location.com/database/ip-country" target="_blank">DB1 LITE</a> or <a href="https://www.ip2location.com/database/db1-ip-country" target="_blank">commercial DB1</a>.</p>]]></comment>
@@ -32,8 +36,30 @@
 					<label>API Key</label>
 					<comment><![CDATA[<p>Your IP2Location <a href='https://www.ip2location.io' target='_blank'>Web Service</a> API key.</p>]]></comment>
 				</field>
+				<field id="enable_session_cache" translate="label comment" type="select" sortOrder="55" showInDefault="1" showInWebsite="0" showInStore="0">
+					<label>Enable Session Cache</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<comment>Cache resolved country code in the visitor session to avoid repeated API/BIN lookups.</comment>
+				</field>
 			</group>
-			<group id="redirection" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+			<group id="block_page" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Block Page</label>
+				<field id="block_page_type" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Block Page Type</label>
+					<source_model>Hexasoft\IP2LocationCountryBlocker\Model\Config\Source\BlockPageType</source_model>
+				</field>
+				<field id="cms_block_identifier" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>CMS Block Identifier</label>
+					<comment>Static block identifier to display when blocking. Used when Block Page Type is "CMS Block".</comment>
+					<depends><field id="block_page_type">cms_block</field></depends>
+				</field>
+				<field id="redirect_url" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Redirect URL</label>
+					<comment>Full URL to redirect blocked visitors to. Used when Block Page Type is "Redirect URL".</comment>
+					<depends><field id="block_page_type">redirect</field></depends>
+				</field>
+			</group>
+			<group id="redirection" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="0" showInStore="0">
 				<label>Redirection</label>
 				<field id="enable_redirection" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Enable Country Redirection</label>

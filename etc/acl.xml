@@ -6,7 +6,7 @@
 				<resource id="Magento_Backend::stores">
 					<resource id="Magento_Backend::stores_settings">
 						<resource id="Magento_Config::config" title="Configuration" sortOrder="25">
-							<resource id="Hexasoft_IP2LocationCountryBlocker::config_ip2locationcountryblocker" title="IP2Location Country Blocker" sortOrder="20" />
+							<resource id="Hexasoft_IP2LocationCountryBlocker::config_country_blocker" title="IP2Location Country Blocker" sortOrder="20" />
 						</resource>
 					</resource>
 				</resource>
